@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多种3D动态旋转浪漫相册库</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #ffc0cb, #ff69b4);
+            overflow: hidden;
+        }
+
+        /* 相册容器 */
+        #album {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            transform-style: preserve-3d;
+            animation: rotate 30s linear infinite;
+        }
+
+        /* 旋转动画 */
+        @keyframes rotate {
+            from {
+                transform: rotateY(0deg) rotateX(0deg);
+            }
+            to {
+                transform: rotateY(360deg) rotateX(360deg);
+            }
+        }
+
+        /* 照片样式 */
+     .photo {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            backface-visibility: hidden;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.5s ease;
+        }
+
+     .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(1.2);
+        }
+
+        /* 不同照片的3D位置 */
+     .photo:nth-child(1) {
+            transform: rotateY(0deg) rotateX(0deg) translateZ(600px);
+        }
+     .photo:nth-child(2) {
+            transform: rotateY(60deg) rotateX(30deg) translateZ(600px);
+        }
+     .photo:nth-child(3) {
+            transform: rotateY(120deg) rotateX(60deg) translateZ(600px);
+        }
+     .photo:nth-child(4) {
+            transform: rotateY(180deg) rotateX(90deg) translateZ(600px);
+        }
+     .photo:nth-child(5) {
+            transform: rotateY(240deg) rotateX(120deg) translateZ(600px);
+        }
+     .photo:nth-child(6) {
+            transform: rotateY(300deg) rotateX(150deg) translateZ(600px);
+        }
+
+        /* 控制按钮样式 */
+        #controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        button {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 0 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff4081;
+        }
+
+        /* 飘落花瓣样式 */
+     .petal {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: url('https://image.freepik.com/free-icon/petal_318-55124.png') center/cover no-repeat;
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* 闪烁星星样式 */
+     .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="album">
+        <div class="photo">
+            <img src="1.png" alt="Photo 1">
+        </div>
+        <div class="photo">
+            <img src="2.png" alt="Photo 2">
+        </div>
+        <div class="photo">
+            <img src="3.png" alt="Photo 3">
+        </div>
+        <div class="photo">
+            <img src="4.png" alt="Photo 4">
+        </div>
+        <div class="photo">
+            <img src="5.png" alt="Photo 5">
+        </div>
+        <div class="photo">
+            <img src="6.png" alt="Photo 6">
+        </div>
+    </div>
+    <div id="controls">
+        <button id="prev">上一张</button>
+        <button id="pause">暂停</button>
+        <button id="next">下一张</button>
+    </div>
+
+    <!-- 生成飘落花瓣 -->
+    <script>
+        const petalCount = 50;
+        const albumWidth = 500;
+        const albumHeight = 500;
+
+        for (let i = 0; i < petalCount; i++) {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.style.left = Math.random() * albumWidth + 'px';
+            petal.style.animationDuration = (Math.random() * 3 + 2) +'s';
+            petal.style.animationDelay = Math.random() * 5 +'s';
+            document.body.appendChild(petal);
+        }
+
+        // 生成闪烁星星
+        const starCount = 100;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.left = Math.random() * window.innerWidth + 'px';
+            star.style.top = Math.random() * window.innerHeight + 'px';
+            star.style.animationDuration = (Math.random() * 3 + 2) +'s';
+            document.body.appendChild(star);
+        }
+
+
+        const album = document.getElementById('album');
+        const prevButton = document.getElementById('prev');
+        const pauseButton = document.getElementById('pause');
+        const nextButton = document.getElementById('next');
+        let isPaused = false;
+        let currentIndex = 0;
+        const totalPhotos = 6;
+        const rotationStep = 60;
+
+        function rotateAlbum(direction) {
+            if (isPaused) return;
+            currentIndex = (currentIndex + direction + totalPhotos) % totalPhotos;
+            album.style.transform = `rotateY(${currentIndex * rotationStep}deg) rotateX(${currentIndex * 30}deg)`;
+        }
+
+        function togglePause() {
+            isPaused =!isPaused;
+            if (isPaused) {
+                album.style.animationPlayState = 'paused';
+                pauseButton.textContent = '继续';
+            } else {
+                album.style.animationPlayState = 'running';
+                pauseButton.textContent = '暂停';
+            }
+        }
+
+        prevButton.addEventListener('click', () => rotateAlbum(-1));
+        pauseButton.addEventListener('click', togglePause);
+        nextButton.addEventListener('click', () => rotateAlbum(1));
+
+    </script>
+
+</body>
+
+</html>
